@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "VedaAI — AI Assessment Creator",
-  description: "Create AI-powered assignments and question papers for students",
+  title: "QyraAI — AI Assessment Creator",
+  description: "Create AI-powered assignments and question papers for students and teacher's",
 };
 
 export default function RootLayout({
