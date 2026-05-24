@@ -1,6 +1,6 @@
 import { Assignment, GeneratedPaper, UserProfile } from "@/types";
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
+const BASE_URL = process.env.API_URL || "http://localhost:5000/api";
 
 // Token cookie se ya localStorage se lo
 function getToken(): string | null {
