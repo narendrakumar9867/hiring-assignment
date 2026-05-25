@@ -41,6 +41,6 @@ app.use("/health", (req, res) => {
 })
 
 
-app.listen(PORT, () => {
-    console.log(`App is running on port ${PORT}`);
+server.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
 });

@@ -107,7 +107,7 @@ export default function Sidebar() {
           </svg>
         </div>
         <span className="font-display text-[20px] font-bold text-[#2a2a2a] tracking-tight leading-none">
-          QyraAI
+          Quriai
         </span>
       </div>
 

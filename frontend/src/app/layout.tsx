@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "QyraAI — AI Assessment Creator",
+  title: "Quriai — AI Assessment Creator",
   description: "Create AI-powered assignments and question papers for students and teacher's",
 };
 
