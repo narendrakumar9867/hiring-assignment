@@ -130,40 +130,16 @@ export default function PaperPage() {
 
         <div id="print-area" ref={printRef} className="bg-white rounded-2xl border border-[#e8e6e0] overflow-hidden">
 
-          <div className="flex items-center justify-end gap-2 px-6 py-3 border-b border-[#f0ede8] print:hidden">
-            <button
-              onClick={handleRegenerate}
-              className="flex items-center gap-1.5 px-4 py-2 rounded-full border border-[#e8e6e0] text-[12.5px] font-medium text-[#6b6b6b] hover:border-[#1a1a1a] hover:text-[#1a1a1a] transition-colors"
-            >
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <polyline points="1 4 1 10 7 10" />
-                <path d="M3.51 15a9 9 0 1 0 .49-3.6" />
-              </svg>
-              Regenerate
-            </button>
-            <button
-              onClick={handleDownloadPDF}
-              className="flex items-center gap-1.5 px-4 py-2 rounded-full bg-[#1a1a1a] text-white text-[12.5px] font-medium hover:bg-[#2d2d2d] transition-colors"
-            >
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                <polyline points="7 10 12 15 17 10" />
-                <line x1="12" y1="15" x2="12" y2="3" />
-              </svg>
-              Download PDF
-            </button>
-          </div>
-
           <div className="px-10 py-8 max-w-190 mx-auto">
 
-            <div className="text-center mb-6 border-b border-[#e8e6e0] pb-6">
+            <div className="print-page">
+              <div className="text-center mb-6 border-b-2 border-[#1a1a1a] pb-6">
               <h1 className="text-[20px] font-bold text-[#1a1a1a] leading-tight">
                 {schoolAddress ? `${schoolName}, ${schoolAddress}` : schoolName}
               </h1>
               <p className="text-[14px] text-[#1a1a1a] mt-1">
-                Subject: {paper.subject}
+                Subject: {paper.subject} &nbsp;|&nbsp; Class: {paperData.class || "5th"}
               </p>
-              <p className="text-[13px] text-[#6b6b6b] mt-0.5">Class: 5th</p>
             </div>
 
             <div className="flex items-center justify-between mb-5">
@@ -190,7 +166,7 @@ export default function PaperPage() {
             </div>
 
             {paperData.sections.map((section, si) => (
-              <div key={si} className="mb-8">
+              <div key={si} className="mb-8 avoid-break">
                 <h2 className="text-[16px] font-bold text-[#1a1a1a] text-center mb-2">
                   {section.sectionTitle}
                 </h2>
@@ -210,16 +186,13 @@ export default function PaperPage() {
 
                 <ol className="flex flex-col gap-4">
                   {section.questions.map((q: Question, qi: number) => (
-                    <li key={qi} className="flex gap-3">
+                    <li key={qi} className="flex gap-3 avoid-break">
                       <span className="text-[13px] text-[#1a1a1a] shrink-0 font-medium pt-0.5">
                         {q.questionNumber}.
                       </span>
                       <div className="flex-1">
                         <div className="flex items-start justify-between gap-3">
                           <p className="text-[13px] text-[#1a1a1a] leading-relaxed flex-1">
-                            <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10.5px] font-medium mr-2 ${DIFF_BADGE[q.difficulty] || "bg-gray-100 text-gray-600"}`}>
-                              {q.difficulty.charAt(0).toUpperCase() + q.difficulty.slice(1)}
-                            </span>
                             {q.questionText}
                           </p>
                           <span className="text-[12px] text-[#6b6b6b] shrink-0 pt-0.5">
@@ -247,12 +220,14 @@ export default function PaperPage() {
               </div>
             ))}
 
+            </div>
+
             {answerKey.length > 0 && (
-              <div className="mt-10 border-t border-[#e8e6e0] pt-6">
+              <div className="print-page mt-10 border-t-2 border-[#1a1a1a] pt-6">
                 <h2 className="text-[16px] font-bold text-[#1a1a1a] mb-4">Answer Key</h2>
                 <ol className="flex flex-col gap-3">
                   {answerKey.map((item: AnswerKeyItem) => (
-                    <li key={item.questionNumber} className="text-[13px] text-[#1a1a1a] leading-relaxed">
+                    <li key={item.questionNumber} className="text-[13px] text-[#1a1a1a] leading-relaxed avoid-break">
                       <span className="font-semibold">{item.questionNumber}.</span> {item.answer}
                     </li>
                   ))}
@@ -264,11 +239,23 @@ export default function PaperPage() {
       </main>
 
       <style jsx global>{`
+        @page { size: A4; margin: 12mm; }
         @media print {
+          html, body { width: 210mm; height: 297mm; }
           body * { visibility: hidden; }
           #print-area, #print-area * { visibility: visible; }
-          #print-area { position: absolute; left: 0; top: 0; }
-          .print\\:hidden { display: none !important; }
+          #print-area { position: absolute; left: 0; top: 0; width: 100%; max-width: none; box-shadow: none; border-radius: 0; }
+          .print\:hidden { display: none !important; }
+
+          /* Make each .print-page behave like a real page */
+          .print-page { display: block; page-break-after: always; break-after: page; }
+
+          /* Avoid splitting individual questions or sections across pages when possible */
+          .avoid-break { break-inside: avoid; page-break-inside: avoid; -webkit-column-break-inside: avoid; }
+
+          /* Use full page width for printed content */
+          .px-10 { padding-left: 12mm !important; padding-right: 12mm !important; }
+          .py-8 { padding-top: 12mm !important; padding-bottom: 12mm !important; }
         }
       `}</style>
     </div>

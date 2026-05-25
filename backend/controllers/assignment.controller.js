@@ -8,7 +8,7 @@ import redis from "../config/redis.js";
 
 export const createAssignment = async (req, res) => {
     try {
-        const { title, subject, topic, dueDate, difficulty, additionalInstructions } = req.body;
+        const { title, subject, topic, dueDate, difficulty, additionalInstructions, voiceTranscript } = req.body;
         let { questionTypes } = req.body;
 
         // questionTypes comes as JSON string when using multipart/form-data
@@ -55,6 +55,13 @@ export const createAssignment = async (req, res) => {
             }
         }
 
+        const normalizedAdditionalInstructions = [additionalInstructions, voiceTranscript]
+            .filter(Boolean)
+            .map((value) => String(value).trim())
+            .filter(Boolean)
+            .join(" ")
+            .trim();
+
         const assignment = new Assignment({
             title,
             subject,
@@ -63,7 +70,7 @@ export const createAssignment = async (req, res) => {
             questionTypes,
             totalMarks,
             difficulty: difficulty || "mixed",
-            additionalInstructions: additionalInstructions || "",
+            additionalInstructions: normalizedAdditionalInstructions,
             fileContent,
             fileName,
             status: "pending",
@@ -79,7 +86,7 @@ export const createAssignment = async (req, res) => {
             topic: topic || "",
             questionTypes: assignment.questionTypes,
             difficulty: assignment.difficulty,
-            additionalInstructions: assignment.additionalInstructions,
+            additionalInstructions: normalizedAdditionalInstructions,
             fileContent,
             schoolOrCollegeName: req.user.schoolOrCollegeName || "",
             address: req.user.address || "",

@@ -3,6 +3,7 @@
 import { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Navbar from "@/components/Navbar";
+import VoiceNoteInput from "@/components/VoiceNoteInput";
 import { assignmentApi } from "@/services/api";
 import { useWebSocket } from "@/hooks/useWebSocket";
 import { JobUpdate } from "@/types";
@@ -161,7 +162,7 @@ export default function CreateAssignmentPage() {
     <div className="flex flex-col min-h-screen bg-[#f5f4f0]">
       <Navbar title="Assignment" showBack={true} />
 
-      <div className="flex flex-col gap-0 mb-3 pt-10 items-start pl-[70px]">
+      <div className="flex flex-col gap-0 mb-3 pt-10 items-start pl-17.5">
         <div className="flex items-center gap-2 mb-1">
           <span className="w-2.5 h-2.5 rounded-full bg-green-500 blur-xs" />
           <h1 className="font-display text-[18px] font-bold text-[#1a1a1a] tracking-tight">
@@ -228,25 +229,6 @@ export default function CreateAssignmentPage() {
               Upload images of your preferred document/image
             </p>
 
-            <div className="flex flex-col gap-1.5">
-              <label className="text-sm font-semibold text-black">Due Date</label>
-              <div className="relative">
-                <input
-                  type="date"
-                  value={dueDate}
-                  onChange={(e) => setDueDate(e.target.value)}
-                  placeholder="DD-MM-YYYY"
-                  className={`w-full px-4 py-3 rounded-xl border text-[13.5px] text-[#1a1a1a] bg-white outline-none focus:border-[#1a1a1a] transition-colors ${
-                    errors.dueDate ? "border-red-400" : "border-[#e8e6e0]"
-                  }`}
-                />
-                <svg className="absolute right-4 top-1/2 -translate-y-1/2 text-[#a0a0a0]" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
-                  <rect x="3" y="4" width="18" height="18" rx="2" /><line x1="16" y1="2" x2="16" y2="6" /><line x1="8" y1="2" x2="8" y2="6" /><line x1="3" y1="10" x2="21" y2="10" />
-                </svg>
-              </div>
-              {errors.dueDate && <span className="text-[12px] text-red-500">{errors.dueDate}</span>}
-            </div>
-
             <div className="flex flex-col gap-3">
               <div className="grid grid-cols-[1fr_36px_160px_160px] gap-3 px-1 items-center">
                 <span className="text-[13px] font-semibold text-[#2c2c2c]">Question Type</span>
@@ -309,7 +291,7 @@ export default function CreateAssignmentPage() {
                 onClick={addQType}
                 className="flex items-center gap-2 px-1 py-1 text-[13px] hover:text-[#1a1a1a] transition-colors w-fit text-sm font-semibold text-black"
               >
-                <div className="w-8 h-8 rounded-full bg-[#2B2B2B] flex items-center justify-center flex-shrink-0">
+                <div className="w-8 h-8 rounded-full bg-[#2B2B2B] flex items-center justify-center shrink-0">
                   <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round">
                     <line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" />
                   </svg>
@@ -327,35 +309,16 @@ export default function CreateAssignmentPage() {
               </div>
             </div>
 
-            <div className="flex flex-col gap-1.5">
-              <label className="text-sm font-semibold text-black">
-                Additional Information{" "}
-                <span className="text-sm font-semibold text-black">(For better output)</span>
-              </label>
-              <div className="relative">
-                    <div className="relative rounded-xl border-2 border-dashed border-[#e6e3de] bg-[#FFFFFF] p-6">
-                      <textarea
-                        rows={4}
-                        value={additionalInfo}
-                        onChange={(e) => setAdditionalInfo(e.target.value)}
-                        placeholder="e.g Generate a question paper for 3 hour exam duration..."
-                        className="w-full h-28 bg-transparent resize-none outline-none text-[13.5px] text-[#6b6b6b] placeholder:text-[#bfbdb8] leading-relaxed"
-                      />
-
-                      <button type="button" className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-md">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#333" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
-                          <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z" />
-                          <path d="M19 11v2a7 7 0 0 1-14 0v-2" />
-                        </svg>
-                      </button>
-                    </div>
-              </div>
-            </div>
+            <VoiceNoteInput
+              label="Additional Information"
+              value={additionalInfo}
+              onChange={setAdditionalInfo}
+            />
           </div>
 
           {submitting && statusMsg && (
             <div className="flex items-center gap-3 mt-4 px-5 py-3.5 bg-blue-50 border border-blue-200 rounded-xl">
-              <svg className="animate-spin flex-shrink-0" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" strokeWidth="2" strokeLinecap="round">
+              <svg className="animate-spin shrink-0" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" strokeWidth="2" strokeLinecap="round">
                 <path d="M21 12a9 9 0 1 1-6.219-8.56" />
               </svg>
               <p className="text-[13px] text-blue-700">{statusMsg}</p>
