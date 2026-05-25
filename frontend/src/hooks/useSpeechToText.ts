@@ -2,10 +2,20 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 
+type SRResultEvent = {
+  results: {
+    length: number;
+    [index: number]: {
+      0?: { transcript?: string };
+      isFinal?: boolean;
+    };
+  };
+};
+
 type SR = {
   lang: string; continuous: boolean; interimResults: boolean;
   start(): void; stop(): void; abort(): void;
-  onresult: ((e: SpeechRecognitionResult) => void) | null;
+  onresult: ((e: SRResultEvent) => void) | null;
   onerror:  ((e: { error?: string }) => void) | null;
   onend:    (() => void) | null;
 };
@@ -34,14 +44,12 @@ export function useSpeechToText(
   const supported                  = !!getSR();
 
   const srRef       = useRef<SR | null>(null);
-  const baseRef     = useRef(value);          // text before session started
+  const baseRef     = useRef(value); 
   const onChangeRef = useRef(onChange);
   onChangeRef.current = onChange;
 
-  // Keep base in sync when not listening
   useEffect(() => { if (!listening) baseRef.current = value; }, [value, listening]);
 
-  // Build + wire recognition once per lang
   useEffect(() => {
     const SRApi = getSR();
     if (!SRApi) return;
@@ -52,15 +60,16 @@ export function useSpeechToText(
     sr.interimResults = true;
 
     sr.onresult = (e) => {
-        const last = e.results[e.results.length - 1];
-        const t    = last?.[0]?.transcript ?? "";
+      const results = e.results;
+      const last = results && results[results.length - 1];
+      const t    = last?.[0]?.transcript ?? "";
 
-        if (last?.isFinal) {
-            baseRef.current = clip(`${baseRef.current} ${t}`.trim());
-            onChangeRef.current(baseRef.current);
-        } else {
-            onChangeRef.current(clip(`${baseRef.current} ${t}`.trim()));
-        }
+      if (last?.isFinal) {
+        baseRef.current = clip(`${baseRef.current} ${t}`.trim());
+        onChangeRef.current(baseRef.current);
+      } else {
+        onChangeRef.current(clip(`${baseRef.current} ${t}`.trim()));
+      }
     };
 
     sr.onerror = (e) => {

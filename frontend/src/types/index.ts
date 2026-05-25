@@ -46,6 +46,7 @@ export interface GeneratedPaper {
   _id: string;
   assignmentId: string;
   title: string;
+  class: string;
   subject: string;
   schoolOrCollegeName?: string;
   address?: string;
