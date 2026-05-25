@@ -46,4 +46,25 @@ Production
 - Build frontend: `cd frontend && npm run build`
 - Start backend in production mode per your hosting provider (e.g., PM2, Docker, etc.)
 
-If you want this README in Hindi or more detailed steps (Docker, deployment), tell me and I will expand.
+
+Architecture
+------------
+
+- Backend: Node.js + Express. Uses Mongoose (MongoDB) for storage and Redis for caching/pub-sub. A background worker (BullMQ) processes generation jobs.
+- AI service: separated module that builds prompts and calls the AI provider (OpenAI or similar) to generate JSON-formatted papers.
+- Worker: processes queued jobs, calls AI service, saves `GeneratedPaper` to DB, and publishes progress via Redis.
+- WebSocket: server forwards worker progress to connected clients using a `ws` WebSocket server and Redis pub/sub.
+- Frontend: Next.js (app router) + React + TypeScript. Uses Tailwind for styling, `useWebSocket` hook for realtime updates, and client-side print CSS for PDF export.
+
+Approach
+--------
+
+1. User creates an assignment (form data + optional file + spoken `additionalInstructions`).
+2. Backend saves the assignment and enqueues a generation job.
+3. Worker pulls the job, uses the AI service to generate a structured paper, saves the result, and publishes job updates.
+4. The backend WebSocket server receives Redis messages and forwards them to the browser client (subscribed by job id).
+5. Frontend receives updates via `useWebSocket`, displays progress, and shows the generated paper. `window.print()` + print CSS creates the PDF.
+6. Speech input: frontend uses Web Speech API (hooked via `useSpeechToText`) to capture interim transcripts and put them in the `additionalInstructions` field.
+
+---
+Thank you !!
