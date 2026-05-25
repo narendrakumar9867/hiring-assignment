@@ -3,7 +3,7 @@
 import { useEffect, useRef, useCallback } from "react";
 import { JobUpdate } from "@/types";
 
-const WS_URL = process.env.NEXT_PUBLIC_WS_URL || "ws://localhost:5000";
+const WS_URL = process.env.NEXT_PUBLIC_WS_URL!;
 
 export function useWebSocket(
   jobId: string | null,
