@@ -4,8 +4,7 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "start": "nodemon start",
-    "worker": "node workers/generation.worker.js"
+    "start": "node server.js & node workers/generation.worker.js"
   },
   "keywords": [],
   "author": "",
