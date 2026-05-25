@@ -2,6 +2,7 @@ import express from "express";
 import multer from "multer";
 import {
     createAssignment,
+    deleteAssignment,
     getAssignmentStatus,
     getGeneratedPaper,
     getAllAssignments,
@@ -24,6 +25,7 @@ const upload = multer({
 
 router.get("/", protectRoute, getAllAssignments);
 router.post("/create", protectRoute, upload.single("file"), createAssignment);
+router.delete("/:assignmentId", protectRoute, deleteAssignment);
 router.get("/:assignmentId/status", protectRoute, getAssignmentStatus);
 router.get("/:assignmentId/paper", protectRoute, getGeneratedPaper);
 router.post("/:assignmentId/regenerate", protectRoute, regeneratePaper);

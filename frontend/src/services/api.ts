@@ -69,6 +69,11 @@ export const assignmentApi = {
       method: "POST",
     }),
 
+  delete: (id: string) =>
+    request<{ message: string; assignmentId: string }>(`/assignments/${id}`, {
+      method: "DELETE",
+    }),
+
   getPaper: (assignmentId: string) =>
     request<{ paper: GeneratedPaper; fromCache: boolean }>(`/assignments/${assignmentId}/paper`),
 };

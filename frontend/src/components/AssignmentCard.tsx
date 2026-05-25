@@ -16,8 +16,9 @@ const STATUS_COLORS: Record<Assignment["status"], string> = {
 export default function AssignmentCard({ assignment }: { assignment: Assignment }) {
   const router = useRouter();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [deleting, setDeleting] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
-  const { fetchAssignments } = useAssignmentStore();
+  const { removeAssignment } = useAssignmentStore();
 
   useEffect(() => {
     const handler = (e: MouseEvent) => {
@@ -39,7 +40,22 @@ export default function AssignmentCard({ assignment }: { assignment: Assignment 
 
   const handleDelete = async () => {
     setMenuOpen(false);
-    alert("Delete coming soon");
+
+    const shouldDelete = window.confirm(
+      `Delete assignment \"${assignment.title}\"? This cannot be undone.`
+    );
+
+    if (!shouldDelete) return;
+
+    try {
+      setDeleting(true);
+      await assignmentApi.delete(assignment._id);
+      removeAssignment(assignment._id);
+    } catch (error) {
+      alert(error instanceof Error ? error.message : "Failed to delete assignment.");
+    } finally {
+      setDeleting(false);
+    }
   };
 
   return (
@@ -52,7 +68,7 @@ export default function AssignmentCard({ assignment }: { assignment: Assignment 
           </h3>
         </div>
 
-        <div ref={menuRef} className="relative flex-shrink-0">
+        <div ref={menuRef} className="relative shrink-0">
           <button
             onClick={() => setMenuOpen((o) => !o)}
             className="w-7 h-7 rounded-lg flex items-center justify-center text-[#a0a0a0] hover:bg-[#f5f4f0] hover:text-[#1a1a1a] transition-colors"
@@ -63,7 +79,7 @@ export default function AssignmentCard({ assignment }: { assignment: Assignment 
           </button>
 
           {menuOpen && (
-            <div className="absolute right-0 top-8 w-[160px] bg-white rounded-xl border border-[#e8e6e0] shadow-lg z-50 overflow-hidden">
+            <div className="absolute right-0 top-8 w-40 bg-white rounded-xl border border-[#e8e6e0] shadow-lg z-50 overflow-hidden">
               <button
                 onClick={handleView}
                 className="w-full text-left px-4 py-2.5 text-[13px] text-[#1a1a1a] hover:bg-[#f5f4f0] transition-colors"
@@ -72,9 +88,10 @@ export default function AssignmentCard({ assignment }: { assignment: Assignment 
               </button>
               <button
                 onClick={handleDelete}
+                disabled={deleting}
                 className="w-full text-left px-4 py-2.5 text-[13px] text-red-500 hover:bg-red-50 transition-colors"
               >
-                Delete
+                {deleting ? "Deleting..." : "Delete"}
               </button>
             </div>
           )}

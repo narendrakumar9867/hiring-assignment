@@ -10,6 +10,7 @@ interface AssignmentStore {
   error: string | null;
   fetchAssignments: () => Promise<void>;
   addAssignment: (a: Assignment) => void;
+  removeAssignment: (id: string) => void;
   updateStatus: (id: string, status: Assignment["status"]) => void;
 }
 
@@ -30,6 +31,11 @@ export const useAssignmentStore = create<AssignmentStore>((set) => ({
 
   addAssignment: (a) =>
     set((s) => ({ assignments: [a as Assignment, ...s.assignments] })),
+
+  removeAssignment: (id) =>
+    set((s) => ({
+      assignments: s.assignments.filter((assignment) => assignment._id !== id),
+    })),
 
   updateStatus: (id, status) =>
     set((s) => ({

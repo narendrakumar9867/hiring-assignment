@@ -3,7 +3,7 @@ const require = createRequire(import.meta.url);
 const pdfParse = require("pdf-parse");
 import Assignment from "../models/assignment.model.js";
 import GeneratedPaper from "../models/generatedPaper.model.js";
-import { addGenerationJob } from "../queues/assignment.queue.js";
+import assignmentQueue, { addGenerationJob } from "../queues/assignment.queue.js";
 import redis from "../config/redis.js";
 
 export const createAssignment = async (req, res) => {
@@ -218,6 +218,47 @@ export const regeneratePaper = async (req, res) => {
         });
     } catch (error) {
         console.log("Error in regeneratePaper:", error.message);
+        res.status(500).json({ message: "Internal server error." });
+    }
+};
+
+export const deleteAssignment = async (req, res) => {
+    try {
+        const { assignmentId } = req.params;
+
+        const assignment = await Assignment.findById(assignmentId);
+        if (!assignment) {
+            return res.status(404).json({ message: "Assignment not found." });
+        }
+
+        if (assignment.createdBy.toString() !== req.user._id.toString()) {
+            return res.status(403).json({ message: "Access denied." });
+        }
+
+        if (assignment.jobId) {
+            try {
+                const job = await assignmentQueue.getJob(assignment.jobId);
+                if (job) {
+                    await job.remove();
+                }
+            } catch (queueError) {
+                console.log("Skipping queued job cleanup:", queueError.message);
+            }
+        }
+
+        await Promise.allSettled([
+            GeneratedPaper.deleteOne({ assignmentId }),
+            redis.del(`paper:${assignmentId}`),
+        ]);
+
+        await Assignment.deleteOne({ _id: assignmentId });
+
+        res.status(200).json({
+            message: "Assignment deleted successfully.",
+            assignmentId,
+        });
+    } catch (error) {
+        console.log("Error in deleteAssignment:", error.message);
         res.status(500).json({ message: "Internal server error." });
     }
 };
