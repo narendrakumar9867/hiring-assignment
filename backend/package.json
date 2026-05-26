@@ -4,7 +4,9 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js & node workers/generation.worker.js"
+    "start": "node scripts/dev.js",
+    "dev": "node scripts/dev.js",
+    "worker": "node workers/generation.worker.js"
   },
   "keywords": [],
   "author": "",
@@ -26,6 +28,7 @@
     "nodemon": "^3.1.14",
     "openai": "^4.104.0",
     "pdf-parse": "^2.4.5",
+    "tesseract.js": "^2.1.5",
     "ws": "^8.21.0"
   }
 }

@@ -46,12 +46,12 @@ export interface GeneratedPaper {
   _id: string;
   assignmentId: string;
   title: string;
-  class: string;
+  classGrade: string;
   subject: string;
   schoolOrCollegeName?: string;
   address?: string;
   totalMarks: number;
-  duration?: string;
+  timeDuration?: string;
   generalInstructions: string[];
   answerKey?: AnswerKeyItem[];
   sections: Section[];

@@ -25,7 +25,7 @@ Backend (example `.env`)
 - MONGODB_URI=your_mongo_connection_string
 - REDIS_URL=redis://localhost:6379
 - FIREBASE_SERVICE_ACCOUNT_JSON='path-or-json-of-service-account'
-- OPENAI_API_KEY=your_openai_or_ai_api_key
+- GROQ_API_KEY=your_openai_or_ai_api_key
 - JWT_SECRET=some_secret_for_tokens
 
 Frontend (example `.env.local`)

@@ -151,7 +151,7 @@ export default function CreateAssignmentPage() {
       const res = await assignmentApi.create(fd);
       setAssignmentId(res.assignmentId);
       setJobId(res.jobId);
-      setStatusMsg("Generating your question paper...");
+      setStatusMsg("Assignment created successfully. Generating your question paper...");
     } catch (err) {
       setStatusMsg((err as Error).message);
       setSubmitting(false);
@@ -228,6 +228,25 @@ export default function CreateAssignmentPage() {
             <p className="text-[12px] text-[#a0a0a0] -mt-4 text-center">
               Upload images of your preferred document/image
             </p>
+
+            <div className="flex flex-col gap-1.5">
+              <label className="text-sm font-semibold text-black">Due Date</label>
+              <div className="relative">
+                <input
+                  type="date"
+                  value={dueDate}
+                  onChange={(e) => setDueDate(e.target.value)}
+                  placeholder="DD-MM-YYYY"
+                  className={`w-full px-4 py-3 rounded-xl border text-[13.5px] text-[#1a1a1a] bg-white outline-none focus:border-[#1a1a1a] transition-colors ${
+                    errors.dueDate ? "border-red-400" : "border-[#e8e6e0]"
+                  }`}
+                />
+                <svg className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-[#a0a0a0]" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
+                  <rect x="3" y="4" width="18" height="18" rx="2" /><line x1="16" y1="2" x2="16" y2="6" /><line x1="8" y1="2" x2="8" y2="6" /><line x1="3" y1="10" x2="21" y2="10" />
+                </svg>
+              </div>
+              {errors.dueDate && <span className="text-[12px] text-red-500">{errors.dueDate}</span>}
+            </div>
 
             <div className="flex flex-col gap-3">
               <div className="grid grid-cols-[1fr_36px_160px_160px] gap-3 px-1 items-center">

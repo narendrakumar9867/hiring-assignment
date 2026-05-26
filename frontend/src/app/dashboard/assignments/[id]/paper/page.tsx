@@ -138,13 +138,13 @@ export default function PaperPage() {
                 {schoolAddress ? `${schoolName}, ${schoolAddress}` : schoolName}
               </h1>
               <p className="text-[14px] text-[#1a1a1a] mt-1">
-                Subject: {paper.subject} &nbsp;|&nbsp; Class: {paperData.class || "5th"}
+                Subject: {paper.subject} &nbsp;|&nbsp; Class: {paperData.classGrade || "N/A"}
               </p>
             </div>
 
             <div className="flex items-center justify-between mb-5">
               <p className="text-[13px] text-[#1a1a1a]">
-                Time Allowed: {paperData.duration || "2 hours"}
+                Time Allowed: {paperData.timeDuration || "3 Hours"}
               </p>
               <p className="text-[13px] text-[#1a1a1a]">
                 Maximum Marks: {paperData.totalMarks}
@@ -162,7 +162,7 @@ export default function PaperPage() {
             <div className="mb-7 flex flex-col gap-1.5">
               <p className="text-[12.5px] text-[#1a1a1a]">Name: _______________</p>
               <p className="text-[12.5px] text-[#1a1a1a]">Roll Number: _______________</p>
-              <p className="text-[12.5px] text-[#1a1a1a]">Class: 5th Section: _______</p>
+              <p className="text-[12.5px] text-[#1a1a1a]">Class: {paperData.classGrade || "______"} Section: _______</p>
             </div>
 
             {paperData.sections.map((section, si) => (
