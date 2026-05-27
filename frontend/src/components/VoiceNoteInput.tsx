@@ -32,7 +32,7 @@ export default function VoiceNoteInput({
           className="w-full h-19.5 resize-none bg-transparent pr-16 pt-1 outline-none text-[14px] text-[#5f5f5f] placeholder:text-[#bfbdb8] leading-relaxed"
         />
 
-        {supported && (
+        {/* {supported && (
           <button
             type="button"
             onClick={toggle}
@@ -55,7 +55,7 @@ export default function VoiceNoteInput({
               </svg>
             )}
           </button>
-        )}
+        )} */}
 
         {error && <p className="mt-3 text-[12px] text-red-500">{error}</p>}
       </div>
